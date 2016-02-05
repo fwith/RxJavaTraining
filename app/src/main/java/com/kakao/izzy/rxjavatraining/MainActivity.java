@@ -8,6 +8,10 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Func1;
+
+// 참고 자료
+//    https://medium.com/@LIP/rxjava-29cfb3ceb4ca#.8z3zricib
 
 // 사용된 기술
 // 1. RxJava, RxAndroid
@@ -25,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
 //        helloRxWorld();
 //        simplerCode();
-        transformation();
+//        transformation();
+        operators();
     }
 
     // 1. 내가 무슨일이 일어나는지 최대한 정석적인 흐름의 메소드
@@ -126,6 +131,35 @@ public class MainActivity extends AppCompatActivity {
         // 위와 같은 경우도 다른 이유들로 인해 여전히 만족스럽지 않다. : Subscriber는 메인 스레드에서 동작해야 할 수도 있으므로 최대한 가벼운 상태로 두고 싶다.
         // 더 개념적인 레벨에서, Subsriber들은 반응(reacts)하기로 되어 있는 것이지 변화(mutates)시키는 것이 아니다.
 
-        
+        // 그렇다면, 다른 중간 과정에서 "hello world!"를 변형시킬 수 있다면 쿨해지지 않을까?
+    }
+
+    // 4. Introducing Operators
+    // 이제 아이템 변형(transformation) 문제를 조작자(operator)로 해결하는 방법을 보자.
+    // Operator는 발행된 item들을 원천인 Observable과 최종의 Subscriber 사이에서 조작하기 위해 사용될 수 있다.
+    // RxJava에는 수많은 operator들이 있다. 하지만 유용한 것에 먼저 집중하는 것이 가장 좋다.
+
+    // 3. 과 같은 상황에서는 map() operator를 하나의 발행된 아이템을 다른 것으로 변형하는데 사용할 수 있다.
+    private void operators() {
+        Observable.just("hello world")
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        return s + " -Izzy";
+                    }
+                })
+                .subscribe(s -> Log.d(TAG, s));
+
+        // 위의 코드도 람다로 단순화시킬 수 있다.
+        Observable.just("hello world")
+                .map(s -> s + " -Izzy")
+                .subscribe(s -> Log.d(TAG, s));
+
+        // 결론으로, map() operator는 기본적으로 아이템을 변형시키는 Observable이다. 우리는 map()호출을 원하는 만큼 연쇄시켜 마지막 Subscriber에서 소모가능한 형태로 데이터를 완벽하게 연마시킬 수 있다.
+    }
+
+    // map() 의
+    private void moreOnMap() {
+        //
     }
 }
