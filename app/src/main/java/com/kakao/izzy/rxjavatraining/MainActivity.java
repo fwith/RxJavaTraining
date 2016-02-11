@@ -1,8 +1,12 @@
 package com.kakao.izzy.rxjavatraining;
 
+import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.jakewharton.rxbinding.widget.RxTextView;
+import com.kakao.izzy.rxjavatraining.databinding.ActivityMainBinding;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -25,12 +29,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
+
+        // -- Data Binding 사용 방법
+        // onCreate In Activity -> LayoutNameBinding binding = DataBindingUtil.setContentView(this, ..);
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        // onViewCreated In Fragment
+        // LayoutNameBinding binding = DataBindingUtil.bind(..);
+        // --------------------------------------------------------
+
+
+
+
+//        RxTextView.textChanges(bindin)
 
 //        helloRxWorld();
 //        simplerCode();
 //        transformation();
-        operators();
+//        operators();
     }
 
     // 1. 내가 무슨일이 일어나는지 최대한 정석적인 흐름의 메소드
@@ -161,5 +178,18 @@ public class MainActivity extends AppCompatActivity {
     // map() 의
     private void moreOnMap() {
         //
+
+
+    }
+
+    private void create() {
+        Observable.create(subscriber -> {
+            subscriber.onNext("안녕");
+            subscriber.onNext("잘가");
+            subscriber.onCompleted();
+        }).subscribe(
+                System.out::println,
+                Void -> System.out.println("onCompleted")
+        );
     }
 }
